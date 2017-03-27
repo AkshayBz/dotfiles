@@ -1,0 +1,24 @@
+# Backup files
+*.bak
+
+# Compiled files
+*.com
+*.class
+*.o
+*.so
+*.pyc
+
+# Logs
+*.log
+
+# OSX
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Others
+*.phpbrewrc
+node_modules
+*.nvmrc
