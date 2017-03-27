@@ -1,7 +1,7 @@
 zsh-reload() {
     # Clear Antigen cache
-    exists antigen && antigen reset
-    exists zplug && zplug clear
+    # exists antigen && antigen reset
+    # exists zplug && zplug clear
     # Reread zshrc
     source $HOME/.zshrc
 }

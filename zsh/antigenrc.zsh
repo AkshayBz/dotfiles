@@ -1,3 +1,10 @@
+###### DISABLED! #######
+# To enable:
+# $ git submodule add https://github.com/zsh-users/antigen.git zsh/.antigen
+# Then enable in `.zshrc`:
+# source ~/.zsh/antigenrc.zsh
+########################
+
 # Add antigen defaults
 # export _ANTIGEN_CACHE_ENABLED=true
 source ~/.zsh/.antigen/antigen.zsh

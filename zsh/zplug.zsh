@@ -1,3 +1,10 @@
+###### DISABLED! #######
+# To enable:
+# $ git submodule add https://github.com/zplug/zplug.git zsh/.zplug
+# Then enable in `.zshrc`:
+# source ~/.zsh/zplug.zsh
+########################
+
 # Load Zplug
 source ~/.zsh/.zplug/init.zsh
 
