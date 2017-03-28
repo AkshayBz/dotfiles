@@ -42,6 +42,8 @@ elif [[ $1 == 'mount' ]]; then
     vagrant_mount
 elif [[ $1 == 'down' ]]; then
     vagrant_down
+elif [[ $1 == 'cd' ]]; then
+    cd $VAGRANT_DIR
 else
     cd $VAGRANT_DIR
     vagrant $1
