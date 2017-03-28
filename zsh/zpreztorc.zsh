@@ -32,13 +32,13 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'completion' \
-  'node' \
   'ssh' \
   'git' \
   'syntax-highlighting' \
   'history-substring-search' \
   'prompt'
 
+# 'node' \
 #
 # Autosuggestions
 #
@@ -84,7 +84,7 @@ zstyle ':prezto:module:editor' dot-expansion 'yes'
 # Set the prompt theme to load.
 # Setting it to 'random' loads a random theme.
 # Auto set to 'off' on dumb terminals.
-zstyle ':prezto:module:prompt' theme 'random'
+zstyle ':prezto:module:prompt' theme 'ab'
 
 #
 # Ruby

@@ -14,6 +14,10 @@
 
 source ~/.zsh/bindkeys.zsh
 
+# Non-Prezto plugins!
+export NVM_LAZY_LOAD=true
+source ~/.zsh/plugins/zsh-nvm.plugin.zsh
+
 # Prezto time!
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"

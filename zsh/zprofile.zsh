@@ -18,3 +18,6 @@ else
       source $PHPBREW_ROOT/bashrc
   fi
 fi
+
+# Add custom theme path to fpath
+fpath=($HOME/.zsh/themes $fpath)
