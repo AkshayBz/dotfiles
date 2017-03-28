@@ -1,0 +1,48 @@
+#!/bin/sh
+
+VAGRANT_DIR=${HOME}/1conf
+MOUNT_DIR=${HOME}/base
+
+# Make sure mount directory exists
+mkdir -p ${HOME}/base
+vagrant_mount () {
+    diskutil umount force $MOUNT_DIR
+    echo 'vagrant' | sshfs vagrant@10.0.1.2:www/ $MOUNT_DIR/ -o workaround=rename -o password_stdin
+}
+
+vagrant_up () {
+    cd $VAGRANT_DIR
+    vagrant up
+    vagrant_mount
+}
+
+vagrant_down () {
+    cd $VAGRANT_DIR
+    vagrant halt
+    diskutil umount force $MOUNT_DIR
+}
+
+vagrant_ssh () {
+    if [[ $pwd == $VAGRANT_DIR ]]; then
+        vagrant ssh
+    else
+        cd $VAGRANT_DIR
+        vagrant ssh
+    fi
+}
+
+if [[ $# -ne 1 ]]; then
+    vagrant_up
+elif [[ $1 == 'up' ]]; then
+    vagrant_up
+    vagrant_ssh
+elif [[ $1 == 'ssh' ]]; then
+    vagrant_ssh
+elif [[ $1 == 'mount' ]]; then
+    vagrant_mount
+elif [[ $1 == 'down' ]]; then
+    vagrant_down
+else
+    cd $VAGRANT_DIR
+    vagrant $1
+fi
