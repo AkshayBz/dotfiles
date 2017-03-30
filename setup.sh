@@ -21,6 +21,7 @@ exists() {
 create_link() {
     printf "\e[0;33mCreating link:\e[0m \e[0;34m${HOME}/${2}\e[0m \e[0;33m=>\e[0m \e[0;34m${ROOT_DIR}/${1}\e[0m"
     echo
+    backup $2 # Backup existing target
     ln -fs "${ROOT_DIR}/${1}" "${HOME}/${2}"
 }
 
@@ -30,8 +31,8 @@ backup() {
     test -e $HOME/$1 && \
     # Notify
     print_in_yellow "Backing up: $HOME/$1 to $HOME/$1.abak" && \
-    # Remove existing backup, if any
-    rm -rf $HOME/$1.abak && \
+    # Remove existing backup, if any. Prompts before deleting.
+    (test -e $HOME/$1.abak && rm -ri $HOME/$1.abak || true) && \
     # Backup
     mv $HOME/$1 $HOME/$1.abak
     true
