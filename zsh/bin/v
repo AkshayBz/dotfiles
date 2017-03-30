@@ -3,48 +3,75 @@
 VAGRANT_DIR=${HOME}/1conf
 MOUNT_DIR=${HOME}/base
 
-# Make sure mount directory exists
-mkdir -p ${HOME}/base
+set -e
+
+[[ $pwd == $VAGRANT_DIR ]] || cd $VAGRANT_DIR
+
+vagrant_umount () {
+    diskutil umount $MOUNT_DIR || diskutil umount force $MOUNT_DIR
+}
+
 vagrant_mount () {
-    diskutil umount force $MOUNT_DIR
+    vagrant_umount
+    # sudo mount -t nfs -o vers=4 -o port=2049 resvport,rw,nfc -o actimeo=1 10.0.1.2:/www $MOUNT_DIR
+    # mount -t nfs -o vers=4 -o port=2049 \
+    #     -o rsize=32768,wsize=32768,intr,noatime,rw,nfc \
+    #     10.0.1.2:/home/vagrant/www $MOUNT_DIR
     echo 'vagrant' | sshfs vagrant@10.0.1.2:www/ $MOUNT_DIR/ -o workaround=rename -o password_stdin
 }
 
 vagrant_up () {
-    cd $VAGRANT_DIR
     vagrant up
     vagrant_mount
 }
 
 vagrant_down () {
-    cd $VAGRANT_DIR
+    vagrant_umount
     vagrant halt
-    diskutil umount force $MOUNT_DIR
 }
 
 vagrant_ssh () {
-    if [[ $pwd == $VAGRANT_DIR ]]; then
-        vagrant ssh
-    else
-        cd $VAGRANT_DIR
-        vagrant ssh
-    fi
+    vagrant ssh
 }
 
-if [[ $# -ne 1 ]]; then
-    vagrant_up
-elif [[ $1 == 'up' ]]; then
-    vagrant_up
-    vagrant_ssh
-elif [[ $1 == 'ssh' ]]; then
-    vagrant_ssh
-elif [[ $1 == 'mount' ]]; then
+vagrant_reload () {
+    vagrant_umount
+    vagrant reload
     vagrant_mount
-elif [[ $1 == 'down' ]]; then
-    vagrant_down
-elif [[ $1 == 'cd' ]]; then
-    cd $VAGRANT_DIR
-else
-    cd $VAGRANT_DIR
-    vagrant $1
+}
+
+if [[ $# -lt 1 ]]; then
+    vagrant_up
+    return
 fi
+
+case "$1" in
+    up)
+        vagrant_up
+        vagrant_ssh
+        ;;
+
+    ssh)
+        vagrant_ssh
+        ;;
+
+    mount)
+        vagrant_mount
+        ;;
+
+    down)
+        vagrant_down
+        ;;
+
+    edit)
+        vi $VAGRANT_DIR/Vagrantfile
+        ;;
+
+    help)
+        printf "\e[0;32mUsage:\e[0m v [up|ssh|mount|down|edit|help]\n"
+        printf "\e[0;32mNote:\e[0m All other parameters are forwarded to \`vagrant\` command.\n"
+        ;;
+
+    *)
+        vagrant "$@"
+esac
