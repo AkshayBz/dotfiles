@@ -1,31 +1,30 @@
 #
-# A single line theme with Git information on the left and Ruby on the right.
-#
-# Authors:
-#     Steve Losh <steve@stevelosh.com>
-#     Bart Trojanowski <bart@jukie.net>
-#     Brian Carper <brian@carper.ca>
-#     steeef <steeef@gmail.com>
-#     Sorin Ionescu <sorin.ionescu@gmail.com>
-#     Yan Pritzker <yan@pritzker.ws>
-#
-# Screenshots:
-#     http://i.imgur.com/gLgVp6Y.png
+# Components from: Skwp, Spaceship & Pure.
 #
 
 set_node_version() {
-    # Empty
+    # Reset
     node_version=
     # Show NVM status only for JS-specific folders
-    [[ -f package.json || -d node_modules || $(ls -1f "*.js" 2>/dev/null | wc -l) -gt 0 ]] || return
+    # $(ls -1f *.js 2>/dev/null | wc -l) -gt 0 # Disabling extension check until I fix perf.
+    [[ -f package.json || -f .nvmrc || -d node_modules ]] || return
     if (( $+functions[nvm_version] )); then
-      node_version="⬢ ${$(nvm_version)#v}"
+        node_version="⬢ ${$(nvm_version)#v}"
+        true
     fi
-    true
 }
 
 set_php_version() {
-
+    # Reset
+    php_version=
+    # Show PHPBrew status only for PHP-specific folders
+    # $(ls -1f *.php 2>/dev/null | wc -l) -gt 0 # Disabling extension check until I fix perf.
+    [[ -f 'composer.json' ]] || return
+    if (( $+functions[phpbrew_current_php_version] )); then
+        php_version=`echo $(phpbrew_current_php_version) | sed -e 's/php://' | sed -e 's/-phpbrew//'`
+        php_version="👽  ${php_version}"
+        true
+    fi
 }
 
 set_git_info() {
@@ -95,12 +94,19 @@ prompt_ab_setup() {
     zstyle ':prezto:module:git:info:keys' format 'prompt' '(%b%d%a%m%u)' # <= Format to show git info in
     lprompt+='$git_info[prompt] '
 
-    # Prompt symbol
+    # Prompt symbol ❯ with colors
     lprompt+="%(?.${_prompt_ab_colors[3]}.${_prompt_ab_colors[4]})❯%f "
 
     # All set for the left prompt.
     PROMPT=${lprompt}
-    RPROMPT='%F{blue}${node_version}${php_version}'
+
+    # Do the right prompt
+    local rprompt='%F{green}${node_version}%f' # Node version in Green
+    rprompt+='%F{blue}${php_version}%f' # PHP Version in Blue
+
+    # RPROMPT='%F{118}${node_version}${php_version}'
+    # All set for right prompt.
+    RPROMPT=${rprompt}
 }
 
 prompt_ab_setup "$@"
