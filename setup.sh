@@ -31,8 +31,8 @@ backup() {
     test -e $HOME/$1 && \
     # Notify
     print_in_yellow "Backing up: $HOME/$1 to $HOME/$1.abak" && \
-    # Remove existing backup, if any. Prompts before deleting.
-    (test -e $HOME/$1.abak && rm -ri $HOME/$1.abak || true) && \
+    # Remove existing backup, if any.
+    rm -rf $HOME/$1.abak && \
     # Backup
     mv $HOME/$1 $HOME/$1.abak
     true
