@@ -18,6 +18,8 @@
     # Make vim the default editor
     editor = vim
 
+    preloadindex = true
+
 # Colors!
 [color]
     ui = always
