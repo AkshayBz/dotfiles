@@ -1,9 +1,5 @@
 zsh-reload() {
-    # Clear Antigen cache
-    # exists antigen && antigen reset
-    # exists zplug && zplug clear
-    # Reread zshrc
-    source $HOME/.zshrc
+    exec zsh
 }
 
 # Helper function to check if a program exists
