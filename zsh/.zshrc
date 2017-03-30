@@ -28,7 +28,7 @@ source ~/.zsh/functions.zsh
 source ~/.zsh/aliases.zsh
 
 # Get rid of conflicting aliases
-unalias d
+unalias d 2> /dev/null
 
 # Add our custom scripts to path, if it's not there already
 export -U PATH="${PATH}:${HOME}/.zsh/bin"
