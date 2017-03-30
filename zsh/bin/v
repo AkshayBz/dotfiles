@@ -3,12 +3,10 @@
 VAGRANT_DIR=${HOME}/1conf
 MOUNT_DIR=${HOME}/base
 
-set -e
-
 [[ $pwd == $VAGRANT_DIR ]] || cd $VAGRANT_DIR
 
 vagrant_umount () {
-    diskutil umount $MOUNT_DIR || diskutil umount force $MOUNT_DIR
+    diskutil umount force $MOUNT_DIR
 }
 
 vagrant_mount () {
