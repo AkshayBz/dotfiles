@@ -117,8 +117,8 @@ install_nvm() {
 }
 
 install_node() {
-    print_info "Installing Node v$1"
-    . $HOME/.nvm/nvm.sh && nvm install $1
+    print_info "Installing latest Node LTS"
+    . $HOME/.nvm/nvm.sh && nvm install --lts
 }
 
 # Installs yarn
@@ -219,7 +219,7 @@ fi
 install_nvm
 
 # Yarn requires Node v4+
-install_node 6
+install_node
 
 # Install yarn. Provides diff-so-fancy.
 install_yarn
