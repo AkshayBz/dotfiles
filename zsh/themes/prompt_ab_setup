@@ -3,8 +3,6 @@
 #
 
 set_node_version() {
-    # Reset
-    node_version=
     # Show NVM status only for JS-specific folders
     # $(ls -1f *.js 2>/dev/null | wc -l) -gt 0 # Disabling extension check until I fix perf.
     [[ -f package.json || -f .nvmrc || -d node_modules ]] || return
@@ -15,8 +13,6 @@ set_node_version() {
 }
 
 set_php_version() {
-    # Reset
-    php_version=
     # Show PHPBrew status only for PHP-specific folders
     # $(ls -1f *.php 2>/dev/null | wc -l) -gt 0 # Disabling extension check until I fix perf.
     [[ -f 'composer.json' ]] || return
@@ -36,6 +32,10 @@ set_git_info() {
 prompt_ab_precmd() {
     # Set Git repository information.
     set_git_info
+
+    # Reset
+    php_version=
+    node_version=
 
     # Update node_version variable, if not updated, update PHP version variable.
     set_node_version || set_php_version
