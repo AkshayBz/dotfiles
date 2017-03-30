@@ -1,0 +1,27 @@
+#!/bin/sh
+
+dssh() {
+    docker exec -it --rm $1 /bin/bash
+}
+
+clean_containers() {
+    docker rm $(docker ps -a -q)
+}
+
+clean_images() {
+    docker rmi -f $(docker images -q -a -f dangling=true)
+}
+
+if [[ $1 == 'ssh' ]]; then
+    dssh $2
+elif [[ $1 == 'clean' ]]; then
+    if [[ $2 == 'i' ]]; then
+        clean_images
+    elif [[ $2 == 'c' ]]; then
+        clean_containers
+    else
+        docker system prune
+    fi
+else
+    docker "$@"
+fi
