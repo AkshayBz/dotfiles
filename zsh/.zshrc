@@ -16,6 +16,9 @@ source ~/.zsh/plugins/zsh-nvm.plugin.zsh
 export PHPBREW_LAZY_LOAD=true
 source ~/.zsh/plugins/lazy-phpbrew.plugin.zsh
 
+# Enable custom themes
+fpath=(${HOME}/.zsh/themes $fpath)
+
 # Prezto time!
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
     source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
@@ -30,14 +33,13 @@ source ~/.zsh/aliases.zsh
 # Get rid of conflicting aliases
 unalias d 2> /dev/null
 
-# Add our custom scripts to path, if it's not there already
-export -U PATH="${PATH}:${HOME}/.zsh/bin"
+# Add our custom scripts to path
+path=(${HOME}/.zsh/bin $path)
 
 # Non-Prezto plugins
 if $ON_OSX; then
     source ~/.zsh/plugins/sublime.plugin.zsh
     export HOMEBREW_NO_ANALYTICS=1
-    export -U PATH="/usr/local/sbin:${PATH}" # homebrew path
 fi
 
 if [ -f "${HOME}/.zsh/local.zsh" ]; then
