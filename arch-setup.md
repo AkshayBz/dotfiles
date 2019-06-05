@@ -16,6 +16,11 @@ timedatectl set-ntp true
 mount /dev/sdX1 /mnt
 ```
 
+* (Optional) Separate home partition?
+```
+mount /dev/sdX2 /mnt/home
+```
+
 * Update mirror list (Move geo closer servers to the top)
 ```
 nano /etc/pacman.d/mirrorlist
@@ -23,9 +28,7 @@ nano /etc/pacman.d/mirrorlist
 
 * Install base packages
 ```
-pacstrap /mnt base base-devel dialog sudo zsh wpa_supplicant xorg-server xorg-init mesa i3-gaps \
-  firefox-develop-edition xorg-xev \
-  git alacritty neovim htop
+pacstrap /mnt base base-devel
 ```
 
 * Generate fstab
@@ -35,12 +38,15 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 * Chroot into new system
 
+```
 arch-chroot /mnt
+```
 
 * Timezone
-
+```
 ln -sf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
 hwclock --systohc
+```
 
 * Uncomment en_US.UTF-8 UTF-8 and other needed locales in /etc/locale.gen, and generate them with
 locale-gen
@@ -63,6 +69,13 @@ Envyous
 * Set root password
 ```
 passwd
+```
+
+* Install additional packages
+```bash
+pacman -S dialog sudo zsh wpa_supplicant xorg-server xorg-xinit mesa i3-gaps \
+  firefox-developer-edition xorg-xev \
+  git alacritty neovim htop
 ```
 
 * Add user
