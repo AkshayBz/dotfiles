@@ -21,14 +21,19 @@ mount /dev/sdX1 /mnt
 mount /dev/sdX2 /mnt/home
 ```
 
-* Update mirror list (Move geo closer servers to the top)
+* (Optional) Separate boot partition and want to install a bootloader?
+```
+mount /dev/sdX3 /mnt/boot
+```
+
+* Update mirror list (Uncomment & move geo closer servers to the top)
 ```
 nano /etc/pacman.d/mirrorlist
 ```
 
 * Install base packages
 ```
-pacstrap /mnt base base-devel
+pacstrap /mnt base base-devel sudo
 ```
 
 * Generate fstab
@@ -71,16 +76,9 @@ Envyous
 passwd
 ```
 
-* Install additional packages
-```bash
-pacman -S dialog sudo zsh wpa_supplicant xorg-server xorg-xinit mesa i3-gaps \
-  firefox-developer-edition xorg-xev \
-  git alacritty neovim htop
-```
-
 * Add user
 ```
-useradd -m -G wheel -s /usr/bin/zsh akshay
+useradd -m -G wheel -s /usr/bin/zsh akshay && passwd akshay
 ```
 
 * Add to sudoers
@@ -92,16 +90,58 @@ Type `visudo` and uncomment this line: # %wheel ALL=(ALL) ALL
 
 * Reboot and login to system as user
 
+* Enable WiFi auto connect
+```sh
+sudo systemctl enable netctl-auto@wlo1.service
+```
+
+* Install additional packages
+```sh
+sudo pacman -S dialog zsh wpa_supplicant \
+  compton i3-gaps xorg-server xorg-xinit \
+  firefox-developer-edition xorg-xev \
+  git kitty neovim htop \
+  mesa
+```
+
+* (Optional) Nvidia Graphics
+```sh
+sudo pacman -S nvidia bbswitch nvidia-xrun
+```
+
+* Disable nvidia start on boot using bbswitch
+```
+# /etc/modprobe.d/bbswitch.conf
+options bbswitch load_state=0 unload_state=1
+```
+```
+# /etc/modules-load.d/bbswitch.conf
+bbswitch
+```
+
 * Config X server & i3
 
 ```
-~/.xinitrc
+# ~/.Xresources
+Xft.dpi: 166
+Xft.autohint: 0
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+```
+
+```
+# ~/.xinitrc
+xrdb -merge ~/.Xresources
+[ -f ~/.cache/wal/colors.Xresources ] && xrdb -merge ~/.cache/wal/colors.Xresources
+xrandr --dpi 166
 exec i3
 ```
 
 * Start i3
 ```
-startx
+startx  # Or, `nvidia-xrun i3` if you wanna use that GPU
 ```
 
 * Open this gist in browser so that you can copy paste things now :D
@@ -133,19 +173,191 @@ cd yay
 makepkg -si
 ```
 
-* Fan speed control
+# Fan speed control
 ```
 yay -S nbsp-git
 systemctl enable nbfc --now
 nbfc config -a "HP ENVY x360 Convertible 13-ag0xxx"  # Change this if not installing on HP Envy 13
 ```
-* _Any error? Check this: https://wiki.archlinux.org/index.php/Fan_speed_control#Configuration_2_
+
+Run these commands if you get `File Descriptor does not support writing`
+```sh
+sudo mv /opt/nbfc/Plugins/StagWare.Plugins.ECSysLinux.dll /opt/nbfc/Plugins/StagWare.Plugins.ECSysLinux.dll.old
+sudo systemctl restart nbfc
+```
+
+Resources:
+* https://wiki.archlinux.org/index.php/Fan_speed_control#Configuration_2
+
+
+# TLP
+```sh
+sudo pacman -S tlp
+sudo systemctl enable tlp.service
+sudo systemctl enable tlp-sleep.service
+```
+
+Resources:
+* https://wiki.archlinux.org/index.php/TLP
+
+
+# Dnsmasq for local domain resolution
+```sh
+sudo pacman -S resolvconf dnsmasq
+```
+
+```conf
+# /etc/resolvconf.conf
+name_servers="::1 127.0.0.1"
+
+# Write out dnsmasq extended configuration and resolv files
+dnsmasq_conf=/etc/dnsmasq-openresolv.conf
+dnsmasq_resolv=/etc/dnsmasq-resolv.conf
+```
+
+```conf
+# /etc/dnsmasq.conf
+address=/local/127.0.0.1
+listen-address=::1,127.0.0.1
+cache-size=1500
+conf-file=/etc/dnsmasq-openresolv.conf
+resolv-file=/etc/dnsmasq-resolv.conf
+strict-order
+server=1.1.1.1
+server=8.8.8.8
+server=8.8.4.4
+```
+
+```sh
+sudo resolvconf -u
+sudo systemctl start dnsmasq.service
+sudo systemctl enable dnsmasq.service
+```
+
+Resources:
+* https://wiki.archlinux.org/index.php/Openresolv
+* https://wiki.archlinux.org/index.php/Dnsmasq
+
+# Docker
+```sh
+sudo pacman -S docker docker-compose
+sudo usermod -aG docker $USER
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
+Resources:
+* https://wiki.archlinux.org/index.php/Docker
+* https://docs.docker.com/install/linux/linux-postinstall
+
+# Pyenv
+
+Resources:
+* https://github.com/pyenv/pyenv
+
+
+# Sound
+
+```sh
+sudo pacman -S pulseaudio alsa-utils
+```
+
+Control using multimedia keys:
+
+```conf
+# ~/.config/i3/config
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer set Master 5%+
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer set Master 5%-
+# bindsym XF86AudioMute exec --no-startup-id amixer set Master toggle
+# Using pactl because: https://superuser.com/questions/805525/why-is-unmute-not-working-with-amixer-command
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+```
+
+Resources:
+* https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture
+* https://wiki.archlinux.org/index.php/PulseAudio#Keyboard_volume_control
+
+# Touchpad
+
+* One time setup:
+
+```conf
+# /etc/X11/xorg.conf.d/30-touchpad.conf
+Section "InputClass"
+        Identifier "touchpad"
+        MatchIsTouchpad "on"
+        MatchDevicePath "/dev/input/event*"
+        Driver "libinput"
+        Option "Tapping" "on"
+        Option "TappingButtonMap" "lrm"  # 1/2/3 finger tap => left right middle clicks
+EndSection
+```
+
+* If values to be updated during runtime:
+
+```sh
+sudo pacman -S libinput xorg-xinput # Required for setting options at runtime in X
+xinput list
+xinput list-props <device-id>
+xinput set-prop <device-id> <option-number> <value>
+```
+
+For example, to enable taps:
+
+```sh
+$ xinput list-props 11
+Device 'SynPS/2 Synaptics TouchPad':
+  ...
+  libinput Tapping Enabled (287): 0
+  ...
+
+$ xinput set-prop 11 287 1
+```
+
+# Backlight
+```sh
+sudo pacman -S light
+```
+
+Control using multimedia keys:
+
+```conf
+# ~/.config/i3/config
+bindsym XF86MonBrightnessUp exec light -A 5
+bindsym XF86MonBrightnessDown exec light -U 5
+```
+
+Resources:
+* https://github.com/haikarainen/light
+
+
+# Lockscreen
+```sh
+yay -S i3lock-color
+```
+
+Resources:
+
+* ~/.config/i3/scripts/lock.sh
+* https://github.com/PandorasFox/i3lock-color
+
+
+# Application launcher (Rofi)
+```sh
+sudo pacman -S rofi
+```
+
+```conf
+# ~/.config/i3/config
+bindsym $mod+d exec --no-startup-id rofi -show combi
+```
+
+Resources:
+* ~/.config/rofi/config
+* https://github.com/davatorium/rofi
 
 
 ## TODO
-
-# Unbound for DNS resolution
-* https://wiki.archlinux.org/index.php/Unbound
 
 # Light DM Greeter, might wanna skip for now to keep things lightweight
 * https://github.com/NoiSek/Aether
@@ -165,12 +377,6 @@ nbfc config -a "HP ENVY x360 Convertible 13-ag0xxx"  # Change this if not instal
 * yay -S polybar
 https://wiki.archlinux.org/index.php/Polybar
 
-# Rofi
-* https://github.com/davatorium/rofi
-
 # Power management related stuff like tlp, acpi events, hibernation
 
 # Sound, Video codecs
-# Touchpad
-
-# Old stuff like pyenv, nvm, mosh, AWS CLI etc

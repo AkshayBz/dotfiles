@@ -16,7 +16,7 @@
     whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 
     # Make vim the default editor
-    editor = vim
+    editor = nvim
 
     preloadindex = true
 
@@ -44,3 +44,9 @@
     st = status
     lg = log --all --graph --decorate --date-order
     po = push origin HEAD
+
+[pull]
+    rebase = true
+
+[rebase]
+    autoStash = true

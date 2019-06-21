@@ -1,11 +1,6 @@
 #
 # Executes commands at login pre-zshrc.
-#
-# Authors:
-#     Sorin Ionescu <sorin.ionescu@gmail.com>
-#
 
-#
 # Browser
 #
 
@@ -17,7 +12,7 @@ fi
 # Editors
 #
 
-export EDITOR='vi'
+export EDITOR='nvim'
 export VISUAL='nano'
 export PAGER='less'
 
@@ -48,7 +43,7 @@ path=(
 #
 
 # Set the default Less options.
-export LESS='-g -i -M -R -S -w -z-4'
+export LESS='--quit-if-one-screen --ignore-case --status-column --LONG-PROMPT --RAW-CONTROL-CHARS --HILITE-UNREAD --tabs=4 --no-init --window=-4'
 
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
@@ -66,3 +61,4 @@ if [[ ! -d "$TMPDIR" ]]; then
 fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
+

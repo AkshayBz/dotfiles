@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 dssh() {
     docker exec -it --rm $1 /bin/bash
@@ -12,11 +12,17 @@ clean_images() {
     docker rmi -f $(docker images -q -a -f dangling=true)
 }
 
+clean_volumes() {
+    docker volume ls -qf dangling=true | xargs -r docker volume rm
+}
+
 if [[ $1 == 'ssh' ]]; then
     dssh $2
 elif [[ $1 == 'clean' ]]; then
     if [[ $2 == 'i' ]]; then
         clean_images
+    elif [[ $2 == 'v' ]]; then
+        clean_volumes
     elif [[ $2 == 'c' ]]; then
         clean_containers
     else
