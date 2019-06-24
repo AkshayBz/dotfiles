@@ -1,4 +1,5 @@
 rofi.theme: ~/.cache/wal/colors-rofi-dark.rasi
+rofi.font: Fira Code 14
 rofi.combi-modi: window,drun,ssh
 rofi.modi: combi
 rofi.ssh-client: mosh

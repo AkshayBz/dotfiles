@@ -1,3 +1,5 @@
+# XXX: The contents of this plugin have been moved to zprofile, so that pyenv is only init once
+# Reference: https://github.com/pyenv/pyenv/issues/784
 [[ -z "$PYENV_ROOT" ]] && export PYENV_ROOT="$HOME/.pyenv"
 
 _zsh_pyenv_install() {
@@ -7,7 +9,7 @@ _zsh_pyenv_install() {
 
 _zsh_pyenv_load() {
     path=($PYENV_ROOT/bin $path)
-    eval "$(pyenv init -)"
+    eval "$(pyenv init - zsh)"
 }
 
 if [[ -f "$PYENV_ROOT/libexec/pyenv" ]]; then

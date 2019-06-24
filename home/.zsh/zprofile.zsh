@@ -62,3 +62,16 @@ fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
 
+
+# Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+if [[ -f "$PYENV_ROOT/libexec/pyenv" ]]; then
+    path=($PYENV_ROOT/bin $path)
+    eval "$(pyenv init - zsh)"
+fi
+
+# Auto start X server on tty 1
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+  exec startx
+fi
+
