@@ -5,7 +5,7 @@ while [ true ]; do
     DIR="/home/$USER/Pictures/Wallpapers"
     PIC=$(ls $DIR/* | shuf -n 1)
     feh --bg-scale "$PIC"
-    wal -n -i "$PIC"
+    wal -n -s -i "$PIC"
     if [ "$1" == "--rotate" ]; then
         sleep 600
     else
