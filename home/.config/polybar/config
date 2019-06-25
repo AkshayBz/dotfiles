@@ -24,6 +24,8 @@ foreground-alt = #555
 primary = ${xrdb:color1:#ffb52a}
 secondary = ${xrdb:color2:#ee6137}
 alert = ${xrdb:color3:#bd2c40}
+warning = ${xrdb:color4:#EBCB8B}
+success = #A3BE8C
 
 [bar/base]
 width = 100%
@@ -40,16 +42,17 @@ line-color = #f00
 border-size = 0
 border-color = #000000
 
-padding-left = 2
-padding-right = 3
+padding-left = 0
+padding-right = 0
 
 module-margin-left = 1
 module-margin-right = 1
 
-font-0 = NatoMono:pixelsize=12;1
+font-0 = NotoMono:pixelsize=12;1
 font-1 = FontAwesome5Free:style=Solid:pixelsize=13;2
 font-2 = FontAwesome5Brands:style=Solid:pixelsize=13;2
-font-3 = unifont:fontformat=truetype:size=8:antialias=false
+font-3 = Symbola:pixelsize=13;2
+font-4 = unifont:fontformat=truetype:size=8:antialias=false
 
 cursor-click = pointer
 cursor-scroll = ns-resize
@@ -59,9 +62,9 @@ inherit = bar/base
 background = ${colors.background}
 foreground = ${colors.foreground}
 
-modules-left = i3
+modules-left = i3 filesystem
 modules-center = date
-modules-right = updates filesystem wlan pulseaudio cpu memory temperature 
+modules-right = updates wlan pulseaudio backlight cpu memory temperature battery
 
 tray-position = left
 tray-background = ${colors.background}
@@ -105,7 +108,7 @@ label-urgent-padding = ${self.label-focused-padding}
 
 [module/filesystem]
 type = internal/fs
-interval = 25
+interval = 60
 
 mount-0 = /
 mount-1 = /home
@@ -212,13 +215,13 @@ ramp-used-7 = █
 
 [module/wlan]
 type = internal/network
-interface = wlo1
+interface = wlan0
 interval = 3.0
 ; 🠅🠇
 
 format-connected = <ramp-signal> <label-connected>
 format-connected-overline =
-label-connected =   %essid% (%signal%%) %downspeed:1:10%
+label-connected = %{A1:nm-connection-editor:}  %essid% (%signal%%)%{A} %downspeed:1:10%
 
 
 format-disconnected = <label-disconnected>
@@ -271,6 +274,19 @@ bar-volume-empty = -
 bar-volume-empty-font = 2
 bar-volume-empty-foreground = #a9a9a9
 
+[module/backlight]
+type = internal/backlight
+card = intel_backlight
+format = <ramp> <label>
+
+label = %percentage%%
+
+ramp-0 = 🌕
+ramp-1 = 🌔
+ramp-2 = 🌓
+ramp-3 = 🌒
+ramp-4 = 🌑
+
 [module/temperature]
 type = internal/temperature
 thermal-zone = 0
@@ -288,6 +304,35 @@ ramp-0 =
 ramp-1 =
 ramp-2 =
 ramp-foreground = ${colors.foreground-alt}
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = ADP1
+full-at = 98
+
+format-charging = <animation-charging>  <label-charging>
+format-charging-foreground = ${colors.secondary}
+format-discharging = <ramp-capacity>  <label-discharging>
+format-full =  <label-full>
+format-full-foreground = ${colors.success}
+
+label-discharging = %percentage%%
+label-charging = %percentage%%
+label-full = %percentage%%
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-framerate = 750
 
 [module/updates]
 type = custom/script
