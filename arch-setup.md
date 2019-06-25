@@ -6,6 +6,7 @@ wifi-menu
 ```
 dhcpd
 ```
+
 * Update clock
 ```
 timedatectl set-ntp true
@@ -90,14 +91,9 @@ Type `visudo` and uncomment this line: # %wheel ALL=(ALL) ALL
 
 * Reboot and login to system as user
 
-* Enable WiFi auto connect
-```sh
-sudo systemctl enable netctl-auto@wlo1.service
-```
-
 * Install additional packages
 ```sh
-sudo pacman -S dialog zsh wpa_supplicant \
+sudo pacman -S dialog zsh \
   compton i3-gaps xorg-server xorg-xinit \
   firefox-developer-edition xorg-xev \
   git kitty neovim htop \
@@ -201,11 +197,22 @@ Resources:
 * https://wiki.archlinux.org/index.php/TLP
 
 
-# Dnsmasq for local domain resolution
+# Networking (Network Manager, Resolvconf, Dnsmasq for local domain resolution)
+* Install required utils
 ```sh
-sudo pacman -S resolvconf dnsmasq
+sudo pacman -S resolvconf dnsmasq networkmanager iwd  # network-manager-applet nm-connection-editor
+sudo systemctl enable NetworkManager
+sudo systemctl start NetworkManager
 ```
 
+* List and connect to network
+
+```sh
+nmcli device wifi list
+nmcli device wifi connect <ssid> password <password>
+```
+
+* Configure the tools
 ```conf
 # /etc/resolvconf.conf
 name_servers="::1 127.0.0.1"
@@ -228,6 +235,19 @@ server=8.8.8.8
 server=8.8.4.4
 ```
 
+```conf
+# /etc/NetworkManager/conf.d/rc-manager.conf
+[main]
+rc-manager=resolvconf
+```
+
+* (Optional) Use iwd as WiFi backend
+```conf
+# /etc/NetworkManager/conf.d/wifi_backend.conf
+[device]
+wifi.backend=iwd
+```
+
 ```sh
 sudo resolvconf -u
 sudo systemctl start dnsmasq.service
@@ -237,6 +257,8 @@ sudo systemctl enable dnsmasq.service
 Resources:
 * https://wiki.archlinux.org/index.php/Openresolv
 * https://wiki.archlinux.org/index.php/Dnsmasq
+* https://wiki.archlinux.org/index.php/NetworkManager#Use_openresolv
+* https://wiki.archlinux.org/index.php/Iwd
 
 # Docker
 ```sh
@@ -357,7 +379,65 @@ Resources:
 * https://github.com/davatorium/rofi
 
 
+# Wallpapers & Colorscheme
+
+* Pywal for colors
+```sh
+sudo pacman -S python-pywal
+```
+
+* Rotating wallpapers
+```sh
+sudo pacman -S feh
+```
+
+Resources:
+* ~/.config/i3/scripts/wallpaper.sh
+* https://github.com/dylanaraps/pywal
+* https://wiki.archlinux.org/index.php/Feh
+
+# Polybar
+```sh
+yay -S polybar
+```
+
+Resources:
+* ~/.config/polybar/config
+* https://wiki.archlinux.org/index.php/Polybar
+
+
+# Suspend on close
+```conf
+#/etc/systemd/logind.conf
+  [Login]
+  HandlePowerKey=suspend
+  HandleLidSwitch=suspend
+  HandleLidSwitchExternalPower=suspend
+  HandleLidSwitchDocked=ignore
+```
+
+# Bluetooth
+
+* Install and bluez
+```sh
+sudo pacman -S bluez bluez-utils pulseaudio-bluetooth
+sudo systemctl enable bluetooth
+sudo systemctl start bluetooth
+```
+
+* List and connect to device
+```sh
+bluetooth ctl
+nmcli device wifi connect <ssid> password <password>
+```
+
 ## TODO
+
+# Kawase blur for compton
+* https://github.com/yshui/compton/issues/32
+
+# Switch to i3 once i3-gaps merges into i3
+# Can have multi polybar with i3-gaps once top gaps are released (i3-gaps version > 4.16.1)
 
 # Light DM Greeter, might wanna skip for now to keep things lightweight
 * https://github.com/NoiSek/Aether
@@ -365,18 +445,8 @@ Resources:
 # Notification Deamon
 * https://wiki.archlinux.org/index.php/Dunst
 
-# Pywal for colors
-* https://github.com/dylanaraps/pywal/wiki/Getting-Started
-* pacman -S python-pywal
-
-# Rotating wallpapers
-* pacman -S feh
-* feh --randomize --bg-fill ~/Pictures/Wallpapers/* &  # Add this to .xinitrc
-
-# Polybar
-* yay -S polybar
-https://wiki.archlinux.org/index.php/Polybar
-
-# Power management related stuff like tlp, acpi events, hibernation
+# Power management related stuff like acpi events, hibernation
 
 # Sound, Video codecs
+
+
