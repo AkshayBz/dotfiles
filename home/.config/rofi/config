@@ -5,3 +5,4 @@ rofi.modi: combi
 rofi.ssh-client: mosh
 rofi.terminal: kitty
 rofi.drun-show-actions: true
+rofi.show-icons: true
