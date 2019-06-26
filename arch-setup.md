@@ -171,7 +171,7 @@ makepkg -si
 
 # Fan speed control
 ```
-yay -S nbsp-git
+yay -S nbfc-git
 systemctl enable nbfc --now
 nbfc config -a "HP ENVY x360 Convertible 13-ag0xxx"  # Change this if not installing on HP Envy 13
 ```
