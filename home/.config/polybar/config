@@ -46,7 +46,7 @@ padding-left = 0
 padding-right = 0
 
 module-margin-left = 1
-module-margin-right = 1
+module-margin-right = 0
 
 font-0 = NotoMono:pixelsize=12;1
 font-1 = FontAwesome5Free:style=Solid:pixelsize=13;2
@@ -64,7 +64,7 @@ foreground = ${colors.foreground}
 
 modules-left = i3 filesystem
 modules-center = date
-modules-right = updates wlan pulseaudio backlight cpu memory temperature battery
+modules-right = updates wlan pulseaudio backlight memory temperature battery
 
 tray-position = left
 tray-background = ${colors.background}
@@ -170,7 +170,7 @@ interval = 3
 ;   <bar-swap-free> (unreleased)
 ;   <ramp-swap-used> (unreleased)
 ;   <ramp-swap-free> (unreleased)
-format = <label> <ramp-used>
+format = <label>
 
 ; Available tokens:
 ;   %percentage_used% (default)
@@ -190,7 +190,7 @@ format = <label> <ramp-used>
 ;   %gb_swap_free%
 ;   %gb_swap_used%
 
-label =  %percentage_used%%
+label =  %gb_used%
 
 ; Only applies if <bar-used> is used
 bar-used-indicator =
@@ -215,7 +215,7 @@ ramp-used-7 = █
 
 [module/wlan]
 type = internal/network
-interface = wlan0
+interface = wlo1
 interval = 3.0
 ; 🠅🠇
 
@@ -311,9 +311,9 @@ battery = BAT0
 adapter = ADP1
 full-at = 98
 
-format-charging = <animation-charging>  <label-charging>
+format-charging = <animation-charging> <label-charging>
 format-charging-foreground = ${colors.secondary}
-format-discharging = <ramp-capacity>  <label-discharging>
+format-discharging = <ramp-capacity> <label-discharging>
 format-full =  <label-full>
 format-full-foreground = ${colors.success}
 
