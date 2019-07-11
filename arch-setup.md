@@ -95,8 +95,8 @@ Type `visudo` and uncomment this line: # %wheel ALL=(ALL) ALL
 ```sh
 sudo pacman -S dialog zsh \
   compton i3-gaps xorg-server xorg-xinit \
-  firefox-developer-edition xorg-xev \
-  git kitty neovim htop \
+  firefox-developer-edition xorg-xev git \
+  kitty neovim htop \
   mesa
 ```
 
@@ -206,7 +206,6 @@ sudo systemctl start NetworkManager
 ```
 
 * List and connect to network
-
 ```sh
 nmcli device wifi list
 nmcli device wifi connect <ssid> password <password>
@@ -315,7 +314,7 @@ Section "InputClass"
 EndSection
 ```
 
-* If values to be updated during runtime:
+* (Optional) If values to be updated during runtime:
 
 ```sh
 sudo pacman -S libinput xorg-xinput # Required for setting options at runtime in X
@@ -356,10 +355,12 @@ Resources:
 # Lockscreen
 ```sh
 yay -S i3lock-color
+sudo pacman -S xss-lock # To enable auto lock on suspend/hibernate
 ```
 
 Resources:
 
+* ~/.config/i3/config
 * ~/.config/i3/scripts/lock.sh
 * https://github.com/PandorasFox/i3lock-color
 
@@ -410,7 +411,7 @@ Resources:
 ```conf
 #/etc/systemd/logind.conf
   [Login]
-  HandlePowerKey=suspend
+  HandlePowerKey=hibernate
   HandleLidSwitch=suspend
   HandleLidSwitchExternalPower=suspend
   HandleLidSwitchDocked=ignore
@@ -429,6 +430,45 @@ sudo systemctl start bluetooth
 ```sh
 bluetooth ctl
 nmcli device wifi connect <ssid> password <password>
+```
+
+
+# Hibernation (Using swap file)
+
+## Required kernel parameters
+* `resume=UUID=<disk-UUID>`: Get the UUID of the disk on which swapfile resides.
+```sh
+sudo lsblk -o +UUID
+NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT UUID
+nvme0n1     259:0    0 238.5G  0 disk
+...
+├─nvme0n1p6 259:6    0  61.7G  0 part /          dbfe6115-c82a-4106-9689-5f99e4176549
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+```
+
+* `resume_offset=<swap_file_offset>`:
+
+```
+~❯ sudo filefrag -v /swapfile
+Filesystem type is: ef53
+File size of /swapfile is 2147483648 (524288 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..       0:     397312..    397312:      1:
+                              ^^^^^^
+```
+
+* Update `/etc/mkinitcpio.conf`
+```
+HOOKS=(base udev autodetect keyboard modconf block filesystems resume fsck)
+```
+
+* Auto hibernate on 5% battery
+```
+# /etc/udev/rules.d/99-lowbat.rules
+
+# Suspend the system when battery level drops to 5% or lower
+SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-5]", RUN+="/usr/bin/systemctl hibernate"
 ```
 
 ## TODO
