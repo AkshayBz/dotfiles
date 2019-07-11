@@ -7,7 +7,7 @@ while [ true ]; do
     feh --bg-scale "$PIC"
     wal -n -s -i "$PIC"
     if [ "$1" == "--rotate" ]; then
-        sleep 600
+        sleep 1800
     else
         break
     fi
