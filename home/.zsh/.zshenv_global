@@ -1,2 +1,3 @@
+# https://old.reddit.com/r/zsh/comments/3ubrdr/proper_way_to_set_zdotdir/
 export ZDOTDIR=$HOME/.zsh
 . $ZDOTDIR/.zshenv
