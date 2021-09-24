@@ -19,3 +19,5 @@ fi
 if $ON_OSX; then
     export HOMEBREW_NO_ANALYTICS=1
 fi
+
+export COMPOSE_CONVERT_WINDOWS_PATHS=1

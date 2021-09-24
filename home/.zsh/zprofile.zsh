@@ -35,6 +35,7 @@ typeset -gU cdpath fpath mailpath path
 # Set the list of directories that Zsh searches for programs.
 path=(
     /usr/local/{bin,sbin}
+    $HOME/bin
     $path
 )
 
@@ -68,12 +69,15 @@ export PYENV_ROOT="$HOME/.pyenv"
 if [[ -f "$PYENV_ROOT/libexec/pyenv" ]]; then
     path=($PYENV_ROOT/bin $path)
     export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
     eval "$(pyenv init - zsh)"
     eval "$(pyenv virtualenv-init - zsh)"
 fi
+
+# Direnv
+eval "$(direnv hook zsh)"
 
 # Auto start X server on tty 1
 if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
   exec startx
 fi
-

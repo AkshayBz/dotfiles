@@ -15,7 +15,9 @@
     ~/.zshrc: home/.zsh/zshrc.zsh
     ~/.gitconfig: git/.gitconfig
     ~/.gitignore_global: git/.gitignore
-    ~/.config/:
-        glob: true
-        path: home/.config/*
+    # ~/.config/:
+    #     glob: true
+    #     path: home/.config/*
 
+# - shell:
+#   - [chsh  , Setting zsh as default shell]

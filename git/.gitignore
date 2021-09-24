@@ -22,3 +22,6 @@
 *.phpbrewrc
 node_modules
 *.nvmrc
+.vscode/
+
+*:Zone.Identifier

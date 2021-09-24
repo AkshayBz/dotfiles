@@ -29,3 +29,14 @@ fi
 
 alias update-grub="sudo grub-mkconfig -o /boot/grub/grub.cfg"
 alias {ed,emacs,nano,v,vi,vim}="nvim"
+
+# Docker
+alias dc='docker-compose'
+
+alias k='kubectl'
+alias rk='HTTPS_PROXY=localhost:8888 kubectl'
+
+alias t='terraform'
+
+alias h='helm'
+alias rh='HTTPS_PROXY=localhost:8888 helm'

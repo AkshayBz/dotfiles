@@ -30,7 +30,8 @@ zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 # TODO: Move these to a better place maybe?
 PURE_GIT_PULL=0
 prompt_newline="%666v"
-PROMPT=" $PROMPT"
+# PROMPT=" $PROMPT"
+PURE_PROMPT_SYMBOL=' ❯'
 
 # Install plugins if there are plugins that have not been installed
 # if ! zplug check; then
