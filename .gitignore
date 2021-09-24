@@ -1,0 +1,5 @@
+*.zwc
+*.zwc.old
+home/.zsh/.zim/**
+home/.zsh/.zhistory
+home/.zsh/.zcompdump

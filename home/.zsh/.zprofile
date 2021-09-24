@@ -36,6 +36,7 @@ typeset -gU cdpath fpath mailpath path
 path=(
     /usr/local/{bin,sbin}
     $HOME/bin
+    $ZDOTDIR/bin
     $path
 )
 
@@ -75,7 +76,7 @@ if [[ -f "$PYENV_ROOT/libexec/pyenv" ]]; then
 fi
 
 # Direnv
-eval "$(direnv hook zsh)"
+(type direnv &> /dev/null) && eval "$(direnv hook zsh)"
 
 # Auto start X server on tty 1
 if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
